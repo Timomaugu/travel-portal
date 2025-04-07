@@ -30,15 +30,6 @@ if (! function_exists('time_interval')) {
     }
 }
 
-if (! function_exists("get_user")) {
-    function get_user() {
-        $user = auth()->user();
-
-        return $user;
-    }
-
-}
-
 if (! function_exists("get_requisitions")) {
     function get_requisitions($status) {
         
@@ -99,8 +90,8 @@ if (! function_exists("get_requisitions")) {
 
 }
 
-if (! function_exists("getNotifications")) {
-    function getNotifications() {
+if (! function_exists("get_notifications")) {
+    function get_notifications() {
         $notifications = auth()->user()->notifications()->where('status', 0)->orderBy('id', 'desc')->get();
 
         return $notifications;
@@ -122,15 +113,19 @@ if (! function_exists("getConversations")) {
 }
 
 
-if (! function_exists("getMessages")) {
-    function getMessages($conversationId) {
+if (! function_exists("unread_messages")) {
+    function unread_messages() {
         $userId = auth()->user()->id;
-        $messages = Message::where('conversation_id', $conversationId)->where(function ($query) use ($userId) {
-            $query->where('sender_id', $userId);
-        })->orWhere(function ($query) use ($userId) {
-            $query->where('receiver_id', $userId);
-        })->get();
+        $count = Message::where('receiver_id', $userId)->where('read_at', NULL)->count();
 
-        return $messages;
+        return $count;
+    }
+}
+
+if (! function_exists("selectedConversation")) {
+    function selectedConversation($conversationId) {
+        $conversation = Conversation::where('id', $conversationId)->first();
+
+        return $conversation;
     }
 }

@@ -61,7 +61,7 @@ class RequisitionController extends Controller
         ]);
         $notification->save();
 
-        return redirect()->route('requests.index')->with('status','Request Submitted Successfully');
+        return redirect()->route('requests.index')->with('success','Request Submitted Successfully');
     }
 
     public function show($id) {
@@ -87,13 +87,13 @@ class RequisitionController extends Controller
         ]);
         $requisition->fill($data);
         $requisition->save();
-        return redirect()->route('requests.index')->with('status', 'Request Updated Successfully'); 
+        return redirect()->route('requests.index')->with('success', 'Request Updated Successfully'); 
     }
 
     public function destroy($id) { 
         $requisition = Requisition::findOrFail($id);  
         $requisition->delete();
-        return redirect()->route('requests.index')->with('status', 'Request Deleted Successfully');
+        return redirect()->route('requests.index')->with('error', 'Request Deleted Successfully');
 
     }
 
@@ -136,7 +136,7 @@ class RequisitionController extends Controller
             'message'=> $request->input('message'),
         ]);
 
-        return redirect()->route('requests.index')->with('status', 'Approved Successfully'); 
+        return redirect()->route('requests.index')->with('success', 'Approved Successfully'); 
 
     }
 
@@ -178,7 +178,7 @@ class RequisitionController extends Controller
             'message'=> $request->input('message'),
         ]);
         
-        return redirect()->route('requests.index')->with('status', 'Request Declined'); 
+        return redirect()->route('requests.index')->with('success', 'Request Declined'); 
 
     }
 
@@ -210,7 +210,7 @@ class RequisitionController extends Controller
             'message'=> 'New trip request from staff member',
         ]);
 
-        return redirect()->route('requests.index')->with('status','Request Forwarded Successfully');
+        return redirect()->route('requests.index')->with('success','Request Forwarded Successfully');
     }
 
 }

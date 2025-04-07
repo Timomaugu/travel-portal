@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('department_id');
             $table->tinyInteger('status')->default(0);
-            $table->string('trip_date');
+            $table->date('trip_date')->nullable();
             $table->string('adm_verified')->default('0');
             $table->string('hod_agm_gm_approved')->default('0');
             $table->string('director_approved')->nullable();

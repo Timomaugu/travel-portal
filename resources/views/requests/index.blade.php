@@ -28,15 +28,13 @@
         </div>
 
         @php
-            $user = get_user();
+            $user = auth()->user();
             $requisitions = get_requisitions('');
         @endphp
 
         <div class="row">
             <div class="col-sm-12">
-                @if (session('status'))
-                    <div class="alert alert-success">{{ session('status') }}</div>
-                @endif
+                @include('includes.message');
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h3>{{ __('Requests List')}}</h3>
@@ -76,11 +74,11 @@
                                             <td>{{ $requisition->reason }}</td>
                                             <td>{{ ($requisition->travel_mode == 1) ? 'Land'  : 'Flight'}}</td>
                                             <td>{{ ($requisition->accommodation == 0) ? 'No' : 'Yes' }}</td>
-                                            <td>{{ date_create($requisition->trip_date)->format('d/m/Y') }}</td>
+                                            <td>{{ date_create($requisition->trip_date)->format('d M Y') }}</td>
                                             <td><span class="badge {{ ($requisition->status == '0') ? 'badge-warning': '' }} {{ ($requisition->status == '1') ? 'badge-success': '' }} {{ ($requisition->status == '2') ? 'badge-danger': '' }}">{{ ($requisition->status == '0') ? 'Pending': '' }} {{ ($requisition->status == '1') ? 'Approved': '' }} {{ ($requisition->status == '2') ? 'Rejected': '' }}</span></td>
-                                            <td>{{ $requisition->created_at->format('d-m-Y h:i:s') }}</td>
+                                            <td>{{ $requisition->created_at->format('d M Y h:i:s') }}</td>
                                             <td>
-                                                <div class="d-flex justify-content-between">
+                                                <div class="d-flex float-right">
                                                     @can('view request')
                                                         <a href="#"><i class="ik ik-eye f-16 text-primary"></i></a>
                                                     @endcan
@@ -88,7 +86,7 @@
                                                     @if($requisition->status == 0)
                                                         @if($user->hasRole('staff') || ($user->hasRole('hod-agm-gm') && $requisition->hod_agm_gm_approved == 0) || ($user->hasRole('director') && $requisition->director_approved == 0) || ($user->hasRole('ceo') && $requisition->ceo == 0) || $user->hasRole('super-admin'))
                                                             @can('update request')
-                                                                <a href="{{ route('requests.edit', $requisition->id) }}"><i class="ik ik-edit f-16 text-success"></i></a>
+                                                                <a href="{{ route('requests.edit', $requisition->id) }}" class="mx-2"><i class="ik ik-edit f-16 text-success"></i></a>
                                                             @endcan
 
                                                             @can('delete request')
@@ -105,8 +103,8 @@
                                                             @endcan
 
                                                             @can('process request')
-                                                                <button type="button" data-toggle="modal" data-target="#approveModal" class="btn btn-success btn-sm btn-approve"><i class="ik ik-check-circle" aria-hidden="true"></i>Approve</button>
-                                                                <button type="button" id="btn-reject" data-toggle="modal" data-target="#rejectModal" class="btn btn-danger btn-sm btn-reject"><i class="fas fa-times" aria-hidden="true"></i>Decline</button>
+                                                                <button type="button" data-toggle="modal" data-target="#approveModal" class="btn btn-success btn-sm btn-approve ml-2"><i class="ik ik-check-circle" aria-hidden="true"></i>Approve</button>
+                                                                <button type="button" id="btn-reject" data-toggle="modal" data-target="#rejectModal" class="btn btn-danger btn-sm btn-reject mx-2"><i class="fas fa-times" aria-hidden="true"></i>Decline</button>
                                                                 @if($user->hasRole(['super-admin', 'hod-agm-gm', 'director']))
                                                                     <button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">Forward <i class="fas fa-arrow-circle-right"></i></button>
                                                                 @endif
@@ -122,11 +120,11 @@
                                                             @if($requisition->hod_agm_gm_approved == 3 || $requisition->director_approved == 3)
                                                                 <button class="btn btn-info btn-sm"><i class="ik ik-check-circle" aria-hidden="true"></i>Forwarded</button>
                                                             @else
-                                                                <button class="btn btn-success btn-sm"><i class="ik ik-check-circle" aria-hidden="true"></i>Processed</button>
+                                                                <button class="btn btn-success btn-sm mx-2"><i class="ik ik-check-circle" aria-hidden="true"></i>Processed</button>
                                                             @endif
                                                         @endif
                                                     @else
-                                                        <button class="btn btn-success btn-sm"><i class="ik ik-check-circle" aria-hidden="true"></i>Processed</button>
+                                                        <button class="btn btn-success btn-sm mx-2"><i class="ik ik-check-circle" aria-hidden="true"></i>Processed</button>
                                                     @endif
                                                 </div>
                                             </td>

@@ -30,9 +30,7 @@
 
         <div class="row">
             <div class="col-sm-12">
-                @if (session('status'))
-                    <div class="alert alert-success">{{ session('status') }}</div>
-                @endif
+                @include('includes.message')
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h3>{{ __('Users List')}}</h3>

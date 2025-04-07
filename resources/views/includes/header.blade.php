@@ -1,6 +1,5 @@
 @php
-    $notifications = getNotifications();
-    $messages = getMessages(1);
+    $notifications = get_notifications();
 @endphp
 
 <header class="header-top" header-theme="light">
@@ -58,8 +57,8 @@
                     </div>
                 </div>
                 <button type="button" class="nav-link ml-10 right-sidebar-toggle"><i class="ik ik-message-square"></i>
-                    @if($messages->count() > 0)
-                        <span class="badge bg-success">{{ $messages->count() }}</span>
+                    @if(unread_messages() > 0)
+                        <span class="badge bg-success">{{ unread_messages() }}</span>
                     @endif
                 </button>
                 

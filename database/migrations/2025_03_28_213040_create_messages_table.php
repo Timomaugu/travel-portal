@@ -17,8 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('sender_id')->nullable();
             $table->unsignedBigInteger('receiver_id')->nullable();
             $table->text('text');
-            $table->tinyInteger('status')->default(0);
             $table->timestamp('read_at')->nullable();
+            $table->timestamp('sender_deleted_at')->nullable();
+            $table->timestamp('receiver_deleted_at')->nullable();
             $table->timestamps();
             
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');

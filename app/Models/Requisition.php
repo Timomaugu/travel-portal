@@ -17,6 +17,10 @@ class Requisition extends Model
         'department_id',
     ];
 
+    protected $casts = [
+        'trip_date' => 'date',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }

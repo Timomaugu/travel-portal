@@ -7,25 +7,59 @@
             <h6>{{ __('Chat List')}}</h6>
             <form class="mr-t-10">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search for friends ..."> 
+                    <input type="text" id="searchChats" class="form-control" placeholder="Search for users ..."> 
                     <i class="ik ik-search"></i>
                 </div>
             </form>
         </div>
         <div class="chat-list">
             <div class="list-group row">
+
+                <a href="javascript:void(0)" class="list-group-item search hidden" data-chat-user="{{ __('John Doe') }}">
+                    <figure class="user--online">
+                        <img src="{{ asset('assets/images/user.png')}}" class="rounded-circle" alt="">
+                    </figure>
+                    <span>
+                        <span class="name">{{ __('John Doe') }}</span>  
+                        <div class="d-flex">
+                            <span class="username mr-3">{{ date('d/m/Y') }}</span> 
+                            <small>{{ date('h:i A') }}</small>
+                        </div>
+                        
+                    </span>
+                </a>
+                
                 @foreach($conversations as $conversation)
-                    @if ($conversation->sender_id == Auth::id())
-                        <a href="javascript:void(0)" class="list-group-item" data-chat-user="{{ $conversation->receiver->f_name }}">
+                    @if ($conversation->sender_id == auth()->id())
+                        <a href="javascript:void(0)" class="list-group-item chats" data-chat-user="{{ $conversation->receiver->f_name }}">
                             <figure class="user--online">
                                 <img src="{{ asset('assets/images/user.png')}}" class="rounded-circle" alt="">
-                            </figure><span><span class="name">{{ $conversation->receiver->f_name  }}</span>  <span class="username">{{__('@').strtolower($conversation->receiver->f_name )}}_{{strtolower($conversation->receiver->l_name)}}</span> </span>
+                            </figure>
+                            <span>
+                                <span class="name">{{ $conversation->receiver->f_name  }} {{ $conversation->messages()->where('receiver_id', auth()->id())->where('read_at', NULL)->count() }}</span>  
+                                <div class="d-flex">
+                                    <span class="username mr-3">{{ substr($conversation->messages->last()->text, 0, 20) }}</span> 
+                                    <small>{{ $conversation->messages->last()->created_at->format('d/m/Y') }}</small>
+                                </div>
+                                
+                            </span>
+                            <input type="hidden" class="conversation" value="{{ $conversation->id }}">
+                            <input type="hidden" class="receiver" value="{{ $conversation->receiver_id }}">
                         </a>
                     @else
-                    <a href="javascript:void(0)" class="list-group-item" data-chat-user="{{ $conversation->sender->f_name }}">
+                    <a href="javascript:void(0)" class="list-group-item chats" data-chat-user="{{ $conversation->sender->f_name }}">
                         <figure class="user--online">
                             <img src="{{ asset('assets/images/user.png')}}" class="rounded-circle" alt="">
-                        </figure><span><span class="name">{{ $conversation->sender->f_name  }}</span>  <span class="username">{{__('@').strtolower($conversation->sender->f_name )}}_{{strtolower($conversation->sender->l_name)}}</span> </span>
+                        </figure>
+                        <span>
+                            <span class="name">{{ $conversation->sender->f_name  }} <span class="text-danger">{{ $conversation->messages()->where('receiver_id', auth()->id())->where('read_at', NULL)->count() }} </span></span>
+                            <div class="d-flex">
+                                <span class="username mr-3">{{ $conversation->messages->last()->text }}</span> 
+                                <small>{{ $conversation->messages->last()->created_at->format('d/m/Y') }}</small>
+                            </div>
+                        </span>
+                        <input type="hidden" class="conversation" value="{{ $conversation->id }}">
+                        <input type="hidden" class="receiver" value="{{ $conversation->sender_id }}">
                     </a>
                     @endif
                 @endforeach
@@ -33,7 +67,6 @@
         </div>
     </div>
 </aside>
-@php $messages = getMessages(1); @endphp
 <div class="chat-panel" hidden>
     <div class="card">
         <div class="card-header d-flex justify-content-between">
@@ -44,50 +77,18 @@
         <div class="card-body">
             <div class="widget-chat-activity flex-1">
                 <div class="messages">
-                    @foreach($messages as $message)
-                        @if ($message->sender_id != auth()->id())
-                            <div class="message media reply">
-                                <figure class="user--online">
-                                    <a href="#">
-                                        <img src="{{ asset('assets/images/admin.png')}}" class="rounded-circle" alt="">
-                                    </a>
-                                </figure>
-                                <div class="message-body media-body">
-                                    <p>{{ $message->text }}</p>
-                                    <small>{{ $message->created_at->diffForHumans() }}</small>
-                                </div>
-                            </div>
-                        @else
-                            <div class="message media">
-                                <figure class="user--online">
-                                    <a href="#">
-                                        <img src="{{ asset('assets/images/user.png')}}" class="rounded-circle" alt="">
-                                    </a>
-                                </figure>
-                                <div class="message-body media-body">
-                                    <p>{{ $message->text }}</p>
-                                    <small>{{ $message->created_at->diffForHumans() }}</small>
-                                </div>
-                            </div>
-                        @endif
-                         
-                        @php 
-                            $conversationId = $message->conversation_id;
-                            $receiverId = $message->receiver_id;
-                        @endphp
-                        
-                    @endforeach
+                    <h6 class="text-center f-14">{{ __('Loading messages...') }}</h6>
                 </div>
             </div>
         </div>
-        <form action="{{ route('message.send') }}" class="card-footer" method="post">
+        <form action="" id="messageForm" class="card-footer" method="post">
             @csrf
             <div class="d-flex justify-content-end">
-                <input type="hidden" name="conversation_id" value="{{ $conversationId }}">
-                <input type="hidden" name="receiver_id" value="{{ $receiverId }}">
-                <textarea class="border-0 flex-1" name="message" rows="1" placeholder="Type your message here"></textarea>
-                <button class="btn btn-icon" type="submit"><i class="ik ik-arrow-right text-success"></i></button>
+                <textarea class="border-0 flex-1" id="message" rows="1" placeholder="Type your message here"></textarea>
+                <button class="btn btn-icon btn-send" type="button"><i class="ik ik-arrow-right text-success"></i></button>
             </div>
         </form>
     </div>
 </div>
+
+

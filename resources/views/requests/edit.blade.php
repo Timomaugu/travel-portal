@@ -97,7 +97,7 @@
                                 <!-- Travel Date -->
                                 <div class="col-sm">
                                     <label for="trip_date">Trip Date</label>
-                                    <input type="text" class="form-control datetimepicker-input" id="datepicker" name="trip_date" value="01/24/2025" data-toggle="datetimepicker" data-target="#datepicker" placeholder="Select Date">
+                                    <input type="text" class="form-control datetimepicker-input" id="datepicker" name="trip_date" value="{{ $requisition->trip_date }}" data-toggle="datetimepicker" data-target="#datepicker" placeholder="Select Date">
                                 </div>
                             </div>
 

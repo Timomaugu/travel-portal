@@ -46,8 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('conversations', [MessageController::class, 'createConversation'])->name('conversation.create');
-    Route::post('messages/send', [MessageController::class, 'sendMessage'])->name('message.send');
+    Route::post('chats/find', [MessageController::class, 'findUsers'])->name('chats.search');
+    Route::post('messages/send', [MessageController::class, 'sendMessage']);
     Route::get('messages/{conversationId}', [MessageController::class, 'getMessages']);
 });
 
